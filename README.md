@@ -1,1 +1,1 @@
-# D-Link_control
+# D-Link router remote control

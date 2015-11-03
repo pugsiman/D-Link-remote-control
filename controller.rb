@@ -3,9 +3,9 @@ require 'mechanize'
 
 # known macs to be recognized
 @users_macs = {
-  example:    '40:b0:ca:ad:f2:b5',
-  example2:   '62:23:c0:08:7d:b1',
-  example3:   '23:fc:ef:e0:79:22'
+  # example:    '40:b0:ca:ad:f2:b5',
+  # example2:   '62:23:c0:08:7d:b1',
+  # example3:   '23:fc:ef:e0:79:22'
 }
 
 # deafult parameters
