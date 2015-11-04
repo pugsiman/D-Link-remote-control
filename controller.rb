@@ -9,29 +9,30 @@ require 'mechanize'
 }
 
 # deafult parameters
-@user = 'Admin'
-@pass = 'Admin'
-@url = 'http://10.0.0.138/'
+USER = 'Admin'
+PASS = 'Admin'
+URL = 'http://10.0.0.138/'
 
 @master_user = '00:00:00:00:00:00' # sys admin MAC to hide from block command
 @mac_regex = /[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}/
 
 @agent = Mechanize.new
 @agent.user_agent_alias = 'Windows Mozilla'
-@agent.add_auth(@url, @user, @pass)
+@agent.add_auth(URL, USER, PASS)
 # @agent.log = Logger.new(STDOUT) for logging
 
-def run
+def run(choice = nil)
   print 'Commands: (r)eset, (b)lock, (u)nblock, (l)ist users, (h)elp, (e)xit: '
-  choice = gets.chomp.downcase
-  case choice
-  when 'r' then reset_router
-  when 'b' then block_user
-  when 'u' then unblock_user
-  when 'l' then [list_users, run]
-  when 'h' then [help, run]
-  when 'e' then exit
-  else run
+  until %w(r b u l h e).include? choice
+    choice = gets.chomp.downcase
+    case choice
+    when 'r' then reset_router
+    when 'b' then block_user
+    when 'u' then unblock_user
+    when 'l' then [list_users, run]
+    when 'h' then [help, run]
+    when 'e' then exit
+    end
   end
 end
 
@@ -43,7 +44,7 @@ def fetch_sessionkey(url)
 end
 
 def fetch_macs
-  page = @agent.get_file("#{@url}dhcpinfo.html")
+  page = @agent.get_file("#{URL}dhcpinfo.html")
   macs_array = page.scan(@mac_regex)
   prep_usr_macs(macs_array)
 end
@@ -70,7 +71,7 @@ end
 
 def list_users
   @users_connected = {}
-  page = @agent.get_file("#{@url}dhcpinfo.html")
+  page = @agent.get_file("#{URL}dhcpinfo.html")
   macs_array ||= page.scan(@mac_regex)
   user_count = 1
   macs_array.each do |mac|
@@ -93,8 +94,8 @@ end
 
 def block_user_url(user)
   value = @users_macs.fetch(user)
-  @url + "wlmacflt.cmd?action=add&wlFltMacAddr=#{value}"\
-         "&wlSyncNvram=1&sessionKey=#{fetch_sessionkey(@url + 'wlmacflt.html')}"
+  URL + "wlmacflt.cmd?action=add&wlFltMacAddr=#{value}"\
+         "&wlSyncNvram=1&sessionKey=#{fetch_sessionkey(URL + 'wlmacflt.html')}"
 end
 
 def unblock_user
@@ -110,16 +111,16 @@ end
 def unblock_user_url(user)
   value = @users_macs.values.map { |v| ", #{v.upcase}" }
   value = @users_macs.fetch(user) unless user == :all
-  @url + "wlmacflt.cmd?action=remove&rmLst=#{value.join.upcase}"\
-         "&sessionKey=#{fetch_sessionkey(@url + 'wlmacflt.cmd?action=view')}"
+  URL + "wlmacflt.cmd?action=remove&rmLst=#{value.join.upcase}"\
+         "&sessionKey=#{fetch_sessionkey(URL + 'wlmacflt.cmd?action=view')}"
 end
 
 def reset_router
   puts 'are you sure?'
-  choice = gets.chomp.downcase
+  choice = gets.to_s.chomp.downcase
   exit if choice.start_with? 'n'
-  temp_url = "#{@url}updatesettings.html"
-  reboot_cgi = "#{@url}rebootinfo.cgi?sessionKey=#{fetch_sessionkey(temp_url)}"
+  temp_url = "#{URL}updatesettings.html"
+  reboot_cgi = "#{URL}rebootinfo.cgi?sessionKey=#{fetch_sessionkey(temp_url)}"
   print "\nSENDING REQUEST TO:\n#{reboot_cgi}"
   @agent.get(reboot_cgi)
   puts "\nDONE"
