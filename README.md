@@ -7,7 +7,7 @@ Right now it provides only basic functionality: Block, unblock, reset, and list 
 
 ### Installation
 * Install Ruby (if not installed already)
-* Install Mechanize gem (gem install Mechanize if not installed already)
+* Install Mechanize gem (gem install mechanize if not installed already)
 * Clone / download `controller.rb` (duh)
 
 ### Usage
