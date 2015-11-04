@@ -13,13 +13,16 @@ USER = 'Admin'
 PASS = 'Admin'
 URL = 'http://10.0.0.138/'
 
-@master_user = '00:00:00:00:00:00' # sys admin MAC to hide from block command
-@mac_regex = /[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}/
+MAC_REGEX = /[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}/
+# uncomment to specify sys admin MAC to hide from block command
+# MASTER_USR = '00:00:00:00:00:00'
 
 @agent = Mechanize.new
 @agent.user_agent_alias = 'Windows Mozilla'
 @agent.add_auth(URL, USER, PASS)
-# @agent.log = Logger.new(STDOUT) for logging
+
+# uncomment for logging
+# @agent.log = Logger.new(STDOUT)
 
 def run(choice = nil)
   print 'Commands: (r)eset, (b)lock, (u)nblock, (l)ist users, (h)elp, (e)xit: '
@@ -45,7 +48,7 @@ end
 
 def fetch_macs
   page = @agent.get_file("#{URL}dhcpinfo.html")
-  macs_array = page.scan(@mac_regex)
+  macs_array = page.scan(MAC_REGEX)
   prep_usr_macs(macs_array)
 end
 
@@ -53,7 +56,7 @@ def prep_usr_macs(macs_array)
   user_count = 1
   macs_array.each do |mac|
     name = "user#{user_count}".to_sym
-    if mac == @master_user || @users_macs.values.include?(mac)
+    if mac == MASTER_USR || @users_macs.values.include?(mac)
       next
     else
       @users_macs[name] = mac
@@ -72,7 +75,7 @@ end
 def list_users
   @users_connected = {}
   page = @agent.get_file("#{URL}dhcpinfo.html")
-  macs_array ||= page.scan(@mac_regex)
+  macs_array ||= page.scan(MAC_REGEX)
   user_count = 1
   macs_array.each do |mac|
     name = "user#{user_count}".to_sym
