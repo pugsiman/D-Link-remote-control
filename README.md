@@ -7,12 +7,12 @@ Right now it provides only basic functionality: Block, unblock, reset, and list 
 
 ### Installation
 * Install Ruby (if not installed already)
-* Install Mechanize gem (gem install mechanize if not installed already)
+* Install Mechanize gem (`gem install mechanize` if not installed already)
 * Clone / download `controller.rb` (duh)
 
 ### Usage
-The software is ready to go if no login changes were made to the router interface(eg. changing login password).
+The software is ready to go as long as no login changes were made to the router interface(eg. changing login password).
 If there were, you need to change `USER` and `PASS` variables accordingly.
 If the default gateway IP is incorrect, you also need to change the `URL` variable accordingly.
-It's possible to point out known mac addresses in the `@users_macs` hash, which allows crosschecks between users.
-The `help` function will give information about the methods as needed.
+The `@users_macs` hash is for crosschecking known MACs.
+The `help` command will give information about the methods as needed.
