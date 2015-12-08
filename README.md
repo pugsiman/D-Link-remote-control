@@ -11,8 +11,8 @@ Right now it provides only basic functionality: Block, unblock, reset, and list 
 * Clone / download `controller.rb` (duh)
 
 ### Usage
-The software is ready to go as long as no login changes were made to the router interface(eg. changing login password).
+The program is ready to run as long as no login changes were made to the router interface(eg. changing login password).
 If there were, you need to change `USER` and `PASS` variables accordingly.
 If the default gateway IP is incorrect, you also need to change the `URL` variable accordingly.
-The `@users_macs` hash is for crosschecking known MACs.
+The `@users_macs` hash is optional for crosschecking between known MACs to logged in users.
 The `help` command will give information about the methods as needed.
